@@ -42,27 +42,84 @@ def create_id(link):
     ).hexdigest()
 
 
-def send_telegram(title, link, source):
+def get_image(entry):
 
-    message = (
+    # Tenta encontrar imagem no media_content
+    if "media_content" in entry:
+
+        for media in entry.media_content:
+
+            if "url" in media:
+                return media["url"]
+
+
+    # Tenta encontrar imagem no media_thumbnail
+    if "media_thumbnail" in entry:
+
+        for media in entry.media_thumbnail:
+
+            if "url" in media:
+                return media["url"]
+
+
+    # Tenta encontrar imagem em enclosures
+    if "enclosures" in entry:
+
+        for enclosure in entry.enclosures:
+
+            if "url" in enclosure:
+
+                url = enclosure["url"]
+
+                if any(
+                    ext in url.lower()
+                    for ext in [".jpg", ".jpeg", ".png", ".webp"]
+                ):
+                    return url
+
+
+    return None
+
+
+def send_telegram(title, link, image):
+
+    caption = (
         f"📰 <b>{title}</b>\n\n"
-        f"📡 Fonte: {source}\n\n"
         f"🔗 <a href=\"{link}\">"
         f"Leia a notícia completa"
         f"</a>"
     )
 
-    url = (
-        f"https://api.telegram.org/"
-        f"bot{TELEGRAM_TOKEN}/sendMessage"
-    )
 
-    data = {
-        "chat_id": TELEGRAM_CHAT_ID,
-        "text": message,
-        "parse_mode": "HTML",
-        "disable_web_page_preview": False
-    }
+    # Se encontrou imagem
+    if image:
+
+        url = (
+            f"https://api.telegram.org/"
+            f"bot{TELEGRAM_TOKEN}/sendPhoto"
+        )
+
+        data = {
+            "chat_id": TELEGRAM_CHAT_ID,
+            "photo": image,
+            "caption": caption,
+            "parse_mode": "HTML"
+        }
+
+    else:
+
+        url = (
+            f"https://api.telegram.org/"
+            f"bot{TELEGRAM_TOKEN}/sendMessage"
+        )
+
+        data = {
+            "chat_id": TELEGRAM_CHAT_ID,
+            "text": caption,
+            "parse_mode": "HTML",
+            "disable_web_page_preview": False
+        }
+
 
     response = requests.post(
         url,
@@ -70,11 +127,14 @@ def send_telegram(title, link, source):
         timeout=30
     )
 
+
     if not response.ok:
+
         print(
             "Erro ao enviar para Telegram:",
             response.text
         )
+
 
     return response.ok
 
@@ -82,14 +142,18 @@ def send_telegram(title, link, source):
 def main():
 
     if not TELEGRAM_TOKEN:
+
         raise Exception(
             "TELEGRAM_TOKEN não configurado."
         )
 
+
     if not TELEGRAM_CHAT_ID:
+
         raise Exception(
             "TELEGRAM_CHAT_ID não configurado."
         )
+
 
     with open(
         "feeds.json",
@@ -99,7 +163,9 @@ def main():
 
         feeds = json.load(file)
 
+
     published = load_published()
+
 
     for feed in feeds:
 
@@ -107,9 +173,11 @@ def main():
             f"Verificando: {feed['name']}"
         )
 
+
         rss = feedparser.parse(
             feed["url"]
         )
+
 
         for item in reversed(
             rss.entries[:20]
@@ -120,33 +188,47 @@ def main():
                 "Sem título"
             )
 
+
             link = item.get("link")
 
+
             if not link:
+
                 continue
+
 
             news_id = create_id(link)
 
+
             if news_id in published:
+
                 continue
+
+
+            image = get_image(item)
+
 
             success = send_telegram(
                 title,
                 link,
-                feed["name"]
+                image
             )
+
 
             if success:
 
                 published.add(news_id)
+
 
                 print(
                     "Publicado:",
                     title
                 )
 
+
     save_published(published)
 
 
 if __name__ == "__main__":
+
     main()
