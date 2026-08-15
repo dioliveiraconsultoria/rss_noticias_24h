@@ -1,0 +1,45 @@
+name: Telegram RSS Bot
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+
+  workflow_dispatch:
+
+jobs:
+
+  run-bot:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar bibliotecas
+        run: |
+          pip install -r requirements.txt
+
+      - name: Executar bot
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python bot.py
+
+      - name: Salvar histórico
+        run: |
+          git config --global user.name "Telegram RSS Bot"
+          git config --global user.email "bot@github.com"
+
+          git add published.json
+
+          git diff --cached --quiet || git commit -m "Atualizar histórico"
+
+          git push
