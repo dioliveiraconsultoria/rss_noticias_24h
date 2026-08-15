@@ -84,11 +84,10 @@ def get_image(entry):
 def send_telegram(title, link, image):
 
     caption = (
-        f"📰 <b>{title}</b>\n\n"
-        f"🔗 <a href=\"{link}\">"
-        f"Leia a notícia completa"
-        f"</a>"
-    )
+    f"📰 <b>{title}</b>\n\n"
+    f"🔗 <b>Leia a matéria:</b>\n"
+    f"{link}"
+)
 
 
     # Se encontrou imagem
