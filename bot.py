@@ -26,13 +26,22 @@ def load_published():
 
 def save_published(published):
 
-    with open(DATABASE_FILE, "w", encoding="utf-8") as file:
+    with open(
+        DATABASE_FILE,
+        "w",
+        encoding="utf-8"
+    ) as file:
+
         json.dump(
-            list(published),
+            published,
             file,
             ensure_ascii=False,
             indent=2
         )
+
+    print(
+        f"Histórico salvo: {len(published)} notícias"
+    )
 
 
 def create_id(link):
