@@ -1,6 +1,5 @@
 import os
 import json
-import hashlib
 import requests
 import feedparser
 
@@ -8,126 +7,100 @@ import feedparser
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 
-DATABASE_FILE = "published.json"
+HISTORY_FILE = "published.json"
 
 
-def load_published():
+# ==========================================
+# CARREGAR HISTÓRICO
+# ==========================================
 
-    if not os.path.exists(DATABASE_FILE):
-        return set()
+def load_history():
+
+    if not os.path.exists(HISTORY_FILE):
+
+        return {
+            "published": []
+        }
 
     try:
-        with open(DATABASE_FILE, "r", encoding="utf-8") as file:
-            return set(json.load(file))
 
-    except Exception:
-        return set()
+        with open(
+            HISTORY_FILE,
+            "r",
+            encoding="utf-8"
+        ) as file:
+
+            data = json.load(file)
+
+            if "published" not in data:
+
+                data["published"] = []
+
+            return data
+
+    except Exception as error:
+
+        print(
+            "Erro ao ler histórico:",
+            error
+        )
+
+        return {
+            "published": []
+        }
 
 
-def save_published(published):
+# ==========================================
+# SALVAR HISTÓRICO
+# ==========================================
+
+def save_history(history):
 
     with open(
-        DATABASE_FILE,
+        HISTORY_FILE,
         "w",
         encoding="utf-8"
     ) as file:
 
         json.dump(
-            published,
+            history,
             file,
             ensure_ascii=False,
             indent=2
         )
 
     print(
-        f"Histórico salvo: {len(published)} notícias"
+        "Histórico salvo."
     )
 
 
-def create_id(link):
+# ==========================================
+# ENVIAR PARA TELEGRAM
+# ==========================================
 
-    return hashlib.md5(
-        link.encode("utf-8")
-    ).hexdigest()
+def send_telegram(title, link):
 
+    message = (
+        f"📰 <b>{title}</b>\n\n"
+        f"🔗 <b>Leia a matéria:</b>\n"
+        f"{link}"
+    )
 
-def get_image(entry):
+    url = (
+        f"https://api.telegram.org/"
+        f"bot{TELEGRAM_TOKEN}/sendMessage"
+    )
 
-    # Tenta encontrar imagem no media_content
-    if "media_content" in entry:
+    data = {
 
-        for media in entry.media_content:
+        "chat_id": TELEGRAM_CHAT_ID,
 
-            if "url" in media:
-                return media["url"]
+        "text": message,
 
+        "parse_mode": "HTML",
 
-    # Tenta encontrar imagem no media_thumbnail
-    if "media_thumbnail" in entry:
-
-        for media in entry.media_thumbnail:
-
-            if "url" in media:
-                return media["url"]
-
-
-    # Tenta encontrar imagem em enclosures
-    if "enclosures" in entry:
-
-        for enclosure in entry.enclosures:
-
-            if "url" in enclosure:
-
-                url = enclosure["url"]
-
-                if any(
-                    ext in url.lower()
-                    for ext in [".jpg", ".jpeg", ".png", ".webp"]
-                ):
-                    return url
-
-
-    return None
-
-
-def send_telegram(title, link, image):
-
-    caption = (
-    f"📰 <b>{title}</b>\n\n"
-    f"🔗 <b>Leia a matéria:</b>\n"
-    f"{link}"
-)
-
-
-    # Se encontrou imagem
-    if image:
-
-        url = (
-            f"https://api.telegram.org/"
-            f"bot{TELEGRAM_TOKEN}/sendPhoto"
-        )
-
-        data = {
-            "chat_id": TELEGRAM_CHAT_ID,
-            "photo": image,
-            "caption": caption,
-            "parse_mode": "HTML"
-        }
-
-    else:
-
-        url = (
-            f"https://api.telegram.org/"
-            f"bot{TELEGRAM_TOKEN}/sendMessage"
-        )
-
-        data = {
-            "chat_id": TELEGRAM_CHAT_ID,
-            "text": caption,
-            "parse_mode": "HTML",
-            "disable_web_page_preview": False
-        }
-
+        "disable_web_page_preview": False
+    }
 
     response = requests.post(
         url,
@@ -135,19 +108,45 @@ def send_telegram(title, link, image):
         timeout=30
     )
 
-
-    if not response.ok:
+    if response.ok:
 
         print(
-            "Erro ao enviar para Telegram:",
-            response.text
+            "Mensagem enviada:"
         )
 
+        print(title)
 
-    return response.ok
+        return True
 
+    else:
+
+        print(
+            "Erro Telegram:"
+        )
+
+        print(response.text)
+
+        return False
+
+
+# ==========================================
+# PRINCIPAL
+# ==========================================
 
 def main():
+
+    print(
+        "===================================="
+    )
+
+    print(
+        "BOT RSS - INICIANDO"
+    )
+
+    print(
+        "===================================="
+    )
+
 
     if not TELEGRAM_TOKEN:
 
@@ -163,6 +162,24 @@ def main():
         )
 
 
+    # --------------------------------------
+    # CARREGAR HISTÓRICO
+    # --------------------------------------
+
+    history = load_history()
+
+    published = history["published"]
+
+
+    print(
+        f"Notícias no histórico: {len(published)}"
+    )
+
+
+    # --------------------------------------
+    # CARREGAR RSS
+    # --------------------------------------
+
     with open(
         "feeds.json",
         "r",
@@ -172,32 +189,59 @@ def main():
         feeds = json.load(file)
 
 
-    published = load_published()
+    total_new = 0
 
+
+    # --------------------------------------
+    # VERIFICAR FONTES
+    # --------------------------------------
 
     for feed in feeds:
 
+        source_name = feed["name"]
+
+        source_url = feed["url"]
+
+
+        print()
         print(
-            f"Verificando: {feed['name']}"
+            "===================================="
+        )
+
+        print(
+            f"Fonte: {source_name}"
+        )
+
+        print(
+            "===================================="
         )
 
 
         rss = feedparser.parse(
-            feed["url"]
+            source_url
         )
 
 
-        for item in reversed(
-            rss.entries[:20]
-        ):
+        # Últimas 20 notícias
+        entries = rss.entries[:20]
+
+
+        # ----------------------------------
+        # NOTÍCIAS
+        # ----------------------------------
+
+        for item in entries:
 
             title = item.get(
                 "title",
                 "Sem título"
-            )
+            ).strip()
 
 
-            link = item.get("link")
+            link = item.get(
+                "link",
+                ""
+            ).strip()
 
 
             if not link:
@@ -205,36 +249,75 @@ def main():
                 continue
 
 
-            news_id = create_id(link)
+            # ----------------------------------
+            # VERIFICAR DUPLICAÇÃO
+            # ----------------------------------
 
+            if link in published:
 
-            if news_id in published:
+                print(
+                    "IGNORADA - já publicada:"
+                )
+
+                print(title)
 
                 continue
 
 
-            image = get_image(item)
+            print()
+            print(
+                "NOVA NOTÍCIA:"
+            )
 
+            print(title)
+
+            print(link)
+
+
+            # ----------------------------------
+            # PUBLICAR
+            # ----------------------------------
 
             success = send_telegram(
                 title,
-                link,
-                image
+                link
             )
 
 
             if success:
 
-                published.add(news_id)
+                # Adiciona ao histórico
+                published.append(link)
+
+                total_new += 1
 
 
-                print(
-                    "Publicado:",
-                    title
+                # Salva imediatamente
+                save_history(
+                    history
                 )
 
 
-    save_published(published)
+                print(
+                    "SALVA NO HISTÓRICO"
+                )
+
+
+    print()
+    print(
+        "===================================="
+    )
+
+    print(
+        f"NOVAS PUBLICAÇÕES: {total_new}"
+    )
+
+    print(
+        f"TOTAL NO HISTÓRICO: {len(published)}"
+    )
+
+    print(
+        "===================================="
 
 
 if __name__ == "__main__":
