@@ -2,5 +2,29 @@
     {
         "name": "Google News Brasil",
         "url": "https://news.google.com/rss?hl=pt-BR&gl=BR&ceid=BR:pt-419"
+    },
+    {
+        "name": "Gazeta do povo - brasil",
+        "url": "https://www.gazetadopovo.com.br/feed/rss/brasil.xml"
+    },
+    {
+        "name": "GAzenta do povo - Mundo",
+        "url": "https://www.gazetadopovo.com.br/feed/rss/mundo.xml"
+    },
+     {
+        "name": "Uol Noticias",
+        "url": "https://rss.uol.com.br/feed/noticias.xml"
+    },
+     {
+        "name": "Reporter Brasil",
+        "url": "https://reporterbrasil.org.br/categorias/noticias/feed"
+    },
+     {
+        "name": "Senado",
+        "url": "https://www12.senado.leg.br/noticias/feed/todasnoticias/rss"
+    },
+     {
+        "name": "Senado",
+        "url": "https://www.camara.leg.br/noticias/rss/ultimas-noticias"
     }
 ]
