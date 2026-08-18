@@ -22,61 +22,40 @@ jobs:
     steps:
 
       - name: Baixar projeto
-
         uses: actions/checkout@v4
-
         with:
           fetch-depth: 0
-
+          persist-credentials: true
 
       - name: Configurar Python
-
         uses: actions/setup-python@v5
-
         with:
           python-version: "3.12"
 
-
       - name: Instalar bibliotecas
-
         run: |
-
           pip install -r requirements.txt
 
-
       - name: Executar bot
-
         env:
-
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-
         run: |
-
           python bot.py
 
-
       - name: Verificar histórico
-
         run: |
-
-          echo "===================================="
-
-          echo "CONTEÚDO DO PUBLISHED.JSON"
-
-          echo "===================================="
-
+          echo "================================"
+          echo "PUBLISHED.JSON"
+          echo "================================"
           cat published.json
 
-
-      - name: Salvar histórico no GitHub
-
+      - name: Salvar histórico
         run: |
 
-          git config --global user.name "Telegram RSS Bot"
+          git config user.name "Telegram RSS Bot"
 
-          git config --global user.email "telegram-rss-bot@users.noreply.github.com"
+          git config user.email "telegram-rss-bot@users.noreply.github.com"
 
           git add published.json
 
@@ -88,6 +67,6 @@ jobs:
 
             git commit -m "Atualizar histórico de notícias"
 
-            git push
+            git push origin HEAD:main
 
           fi
