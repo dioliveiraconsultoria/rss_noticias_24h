@@ -1,379 +1,69 @@
-import os
-import json
-import hashlib
-import requests
-import feedparser
-from urllib.parse import urlsplit, urlunsplit
+name: Telegram RSS Bot
 
+on:
+  schedule:
+    - cron: "*/10 * * * *"
 
-TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
-TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
+  workflow_dispatch:
 
-DATABASE_FILE = "published.json"
+permissions:
+  contents: write
 
+concurrency:
+  group: telegram-rss-bot
+  cancel-in-progress: false
 
-def normalize_url(url):
-    """
-    Normaliza o link para evitar que pequenas diferenças
-    sejam consideradas notícias diferentes.
-    """
+jobs:
 
-    if not url:
-        return ""
+  run-bot:
 
-    url = url.strip()
+    runs-on: ubuntu-latest
 
-    parts = urlsplit(url)
+    steps:
 
-    clean_url = urlunsplit((
-        parts.scheme.lower(),
-        parts.netloc.lower(),
-        parts.path.rstrip("/"),
-        parts.query,
-        ""
-    ))
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    return clean_url
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
+      - name: Instalar bibliotecas
+        run: |
+          pip install -r requirements.txt
 
-def create_id(link):
-    """
-    Cria um identificador único baseado no link.
-    """
+      - name: Executar bot
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python bot.py
 
-    normalized = normalize_url(link)
+      - name: Verificar histórico
+        run: |
+          echo "Conteúdo do published.json:"
+          cat published.json
 
-    return hashlib.sha256(
-        normalized.encode("utf-8")
-    ).hexdigest()
+      - name: Salvar histórico no GitHub
+        run: |
 
+          git config --global user.name "Telegram RSS Bot"
 
-def load_published():
+          git config --global user.email "telegram-rss-bot@users.noreply.github.com"
 
-    if not os.path.exists(DATABASE_FILE):
-        return {}
+          git add published.json
 
-    try:
+          if git diff --cached --quiet; then
 
-        with open(
-            DATABASE_FILE,
-            "r",
-            encoding="utf-8"
-        ) as file:
+            echo "Nenhuma alteração no histórico."
 
-            data = json.load(file)
+          else
 
-            if isinstance(data, dict):
-                return data
+            git commit -m "Atualizar histórico de notícias"
 
-            return {}
+            git push
 
-    except Exception as error:
-
-        print(
-            "Erro ao carregar histórico:",
-            error
-        )
-
-        return {}
-
-
-def save_published(published):
-
-    with open(
-        DATABASE_FILE,
-        "w",
-        encoding="utf-8"
-    ) as file:
-
-        json.dump(
-            published,
-            file,
-            ensure_ascii=False,
-            indent=2
-        )
-
-
-def get_image(entry):
-
-    # media_content
-    if "media_content" in entry:
-
-        for media in entry.media_content:
-
-            if media.get("url"):
-
-                return media["url"]
-
-
-    # media_thumbnail
-    if "media_thumbnail" in entry:
-
-        for media in entry.media_thumbnail:
-
-            if media.get("url"):
-
-                return media["url"]
-
-
-    # enclosures
-    if "enclosures" in entry:
-
-        for enclosure in entry.enclosures:
-
-            url = enclosure.get("url")
-
-            if url:
-
-                return url
-
-
-    return None
-
-
-def send_telegram(title, link, image):
-
-    caption = (
-        f"📰 <b>{title}</b>\n\n"
-        f"🔗 <b>Leia a matéria:</b>\n"
-        f"{link}"
-    )
-
-
-    # Se existir imagem
-    if image:
-
-        telegram_url = (
-            f"https://api.telegram.org/"
-            f"bot{TELEGRAM_TOKEN}/sendPhoto"
-        )
-
-        data = {
-            "chat_id": TELEGRAM_CHAT_ID,
-            "photo": image,
-            "caption": caption,
-            "parse_mode": "HTML"
-        }
-
-    else:
-
-        telegram_url = (
-            f"https://api.telegram.org/"
-            f"bot{TELEGRAM_TOKEN}/sendMessage"
-        )
-
-        data = {
-            "chat_id": TELEGRAM_CHAT_ID,
-            "text": caption,
-            "parse_mode": "HTML",
-            "disable_web_page_preview": False
-        }
-
-
-    try:
-
-        response = requests.post(
-            telegram_url,
-            data=data,
-            timeout=30
-        )
-
-        if response.ok:
-
-            return True
-
-        print(
-            "Erro Telegram:",
-            response.text
-        )
-
-        return False
-
-    except Exception as error:
-
-        print(
-            "Erro de conexão com Telegram:",
-            error
-        )
-
-        return False
-
-
-def main():
-
-    print("===================================")
-    print("        BOT DE NOTÍCIAS RSS")
-    print("===================================")
-
-
-    if not TELEGRAM_TOKEN:
-
-        raise Exception(
-            "TELEGRAM_TOKEN não configurado."
-        )
-
-
-    if not TELEGRAM_CHAT_ID:
-
-        raise Exception(
-            "TELEGRAM_CHAT_ID não configurado."
-        )
-
-
-    # Carrega fontes RSS
-    with open(
-        "feeds.json",
-        "r",
-        encoding="utf-8"
-    ) as file:
-
-        feeds = json.load(file)
-
-
-    # Carrega histórico
-    published = load_published()
-
-
-    total_publicadas = 0
-
-
-    for feed in feeds:
-
-        source_name = feed["name"]
-        source_url = feed["url"]
-
-        print()
-        print(
-            f"Verificando: {source_name}"
-        )
-
-
-        rss = feedparser.parse(
-            source_url
-        )
-
-
-        if rss.bozo:
-
-            print(
-                "Aviso: possível erro no RSS."
-            )
-
-
-        # Pega as notícias mais recentes
-        entries = rss.entries[:20]
-
-
-        # Processa das mais antigas para as mais novas
-        for item in reversed(entries):
-
-            title = item.get(
-                "title",
-                "Sem título"
-            ).strip()
-
-
-            link = item.get(
-                "link",
-                ""
-            ).strip()
-
-
-            if not link:
-
-                continue
-
-
-            normalized_link = normalize_url(
-                link
-            )
-
-
-            news_id = create_id(
-                normalized_link
-            )
-
-
-            # =====================================
-            # VERIFICA SE JÁ FOI PUBLICADA
-            # =====================================
-
-            if news_id in published:
-
-                print(
-                    "IGNORADA - já publicada:",
-                    title
-                )
-
-                continue
-
-
-            print(
-                "NOVA NOTÍCIA:",
-                title
-            )
-
-
-            # Procura imagem
-            image = get_image(item)
-
-
-            # Envia para Telegram
-            success = send_telegram(
-                title,
-                normalized_link,
-                image
-            )
-
-
-            if success:
-
-                # Salva imediatamente no histórico
-                published[news_id] = {
-                    "title": title,
-                    "link": normalized_link,
-                    "source": source_name
-                }
-
-
-                # Salva imediatamente no arquivo
-                save_published(
-                    published
-                )
-
-
-                total_publicadas += 1
-
-
-                print(
-                    "PUBLICADA COM SUCESSO!"
-                )
-
-            else:
-
-                print(
-                    "ERRO - notícia não foi marcada como publicada."
-                )
-
-
-    print()
-    print(
-        "==================================="
-    )
-
-    print(
-        f"Total de novas notícias publicadas: "
-        f"{total_publicadas}"
-    )
-
-    print(
-        f"Total no histórico: {len(published)}"
-    )
-
-    print(
-        "===================================")
-
-
-if __name__ == "__main__":
-
-    main()
+          fi
