@@ -70,7 +70,7 @@ def save_history(history):
         )
 
     print(
-        "Histórico salvo."
+        f"Histórico salvo: {len(history['published'])} notícias"
     )
 
 
@@ -102,29 +102,38 @@ def send_telegram(title, link):
         "disable_web_page_preview": False
     }
 
-    response = requests.post(
-        url,
-        data=data,
-        timeout=30
-    )
+    try:
 
-    if response.ok:
-
-        print(
-            "Mensagem enviada:"
+        response = requests.post(
+            url,
+            data=data,
+            timeout=30
         )
 
-        print(title)
+        if response.ok:
 
-        return True
+            print(
+                "Mensagem enviada com sucesso:"
+            )
 
-    else:
+            print(title)
+
+            return True
 
         print(
             "Erro Telegram:"
         )
 
         print(response.text)
+
+        return False
+
+    except Exception as error:
+
+        print(
+            "Erro de conexão com Telegram:",
+            error
+        )
 
         return False
 
@@ -148,6 +157,10 @@ def main():
     )
 
 
+    # ======================================
+    # VERIFICAR CONFIGURAÇÕES
+    # ======================================
+
     if not TELEGRAM_TOKEN:
 
         raise Exception(
@@ -162,9 +175,9 @@ def main():
         )
 
 
-    # --------------------------------------
+    # ======================================
     # CARREGAR HISTÓRICO
-    # --------------------------------------
+    # ======================================
 
     history = load_history()
 
@@ -176,31 +189,50 @@ def main():
     )
 
 
-    # --------------------------------------
-    # CARREGAR RSS
-    # --------------------------------------
+    # ======================================
+    # CARREGAR FONTES RSS
+    # ======================================
 
-    with open(
-        "feeds.json",
-        "r",
-        encoding="utf-8"
-    ) as file:
+    try:
 
-        feeds = json.load(file)
+        with open(
+            "feeds.json",
+            "r",
+            encoding="utf-8"
+        ) as file:
+
+            feeds = json.load(file)
+
+    except Exception as error:
+
+        raise Exception(
+            f"Erro ao abrir feeds.json: {error}"
+        )
+
+
+    print(
+        f"Fontes RSS encontradas: {len(feeds)}"
+    )
 
 
     total_new = 0
 
 
-    # --------------------------------------
-    # VERIFICAR FONTES
-    # --------------------------------------
+    # ======================================
+    # VERIFICAR CADA FONTE
+    # ======================================
 
     for feed in feeds:
 
-        source_name = feed["name"]
+        source_name = feed.get(
+            "name",
+            "Fonte sem nome"
+        )
 
-        source_url = feed["url"]
+        source_url = feed.get(
+            "url",
+            ""
+        )
 
 
         print()
@@ -213,22 +245,65 @@ def main():
         )
 
         print(
+            f"RSS: {source_url}"
+        )
+
+        print(
             "===================================="
         )
 
 
-        rss = feedparser.parse(
-            source_url
+        if not source_url:
+
+            print(
+                "RSS sem URL. Ignorando."
+            )
+
+            continue
+
+
+        # ==================================
+        # LER RSS
+        # ==================================
+
+        try:
+
+            rss = feedparser.parse(
+                source_url
+            )
+
+        except Exception as error:
+
+            print(
+                f"Erro ao consultar RSS: {error}"
+            )
+
+            continue
+
+
+        if not rss.entries:
+
+            print(
+                "Nenhuma notícia encontrada."
+            )
+
+            continue
+
+
+        print(
+            f"Notícias encontradas no RSS: "
+            f"{len(rss.entries)}"
         )
 
 
-        # Últimas 20 notícias
+        # ==================================
+        # PROCESSAR NOTÍCIAS
+        # ==================================
+
+        # Verifica somente as 20 mais recentes
+
         entries = rss.entries[:20]
 
-
-        # ----------------------------------
-        # NOTÍCIAS
-        # ----------------------------------
 
         for item in entries:
 
@@ -246,37 +321,47 @@ def main():
 
             if not link:
 
+                print(
+                    "Notícia sem link. Ignorando."
+                )
+
                 continue
 
 
-            # ----------------------------------
+            # ==================================
             # VERIFICAR DUPLICAÇÃO
-            # ----------------------------------
+            # ==================================
 
             if link in published:
 
                 print(
-                    "IGNORADA - já publicada:"
+                    f"IGNORADA - já publicada: {title}"
                 )
-
-                print(title)
 
                 continue
 
+
+            # ==================================
+            # NOVA NOTÍCIA
+            # ==================================
 
             print()
             print(
                 "NOVA NOTÍCIA:"
             )
 
-            print(title)
+            print(
+                f"Título: {title}"
+            )
 
-            print(link)
+            print(
+                f"Link: {link}"
+            )
 
 
-            # ----------------------------------
-            # PUBLICAR
-            # ----------------------------------
+            # ==================================
+            # PUBLICAR NO TELEGRAM
+            # ==================================
 
             success = send_telegram(
                 title,
@@ -284,41 +369,70 @@ def main():
             )
 
 
+            # ==================================
+            # SALVAR NO HISTÓRICO
+            # ==================================
+
             if success:
 
-                # Adiciona ao histórico
-                published.append(link)
+                published.append(
+                    link
+                )
 
                 total_new += 1
 
 
-                # Salva imediatamente
                 save_history(
                     history
                 )
 
 
                 print(
-                    "SALVA NO HISTÓRICO"
+                    "SALVA NO HISTÓRICO!"
+                )
+
+            else:
+
+                print(
+                    "Não foi salva porque "
+                    "o Telegram não confirmou o envio."
                 )
 
 
+    # ======================================
+    # RESULTADO FINAL
+    # ======================================
+
     print()
+
+    print(
+        "===================================="
+    )
+
+    print(
+        "RESULTADO DA EXECUÇÃO"
+    )
+
     print(
         "===================================="
     )
 
     print(
-        f"NOVAS PUBLICAÇÕES: {total_new}"
+        f"Novas publicações: {total_new}"
     )
 
     print(
-        f"TOTAL NO HISTÓRICO: {len(published)}"
+        f"Total no histórico: {len(published)}"
     )
 
     print(
         "===================================="
+    )
 
+
+# ==========================================
+# INICIAR BOT
+# ==========================================
 
 if __name__ == "__main__":
 
