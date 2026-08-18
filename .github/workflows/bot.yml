@@ -22,32 +22,56 @@ jobs:
     steps:
 
       - name: Baixar projeto
+
         uses: actions/checkout@v4
+
         with:
           fetch-depth: 0
 
+
       - name: Configurar Python
+
         uses: actions/setup-python@v5
+
         with:
           python-version: "3.12"
 
+
       - name: Instalar bibliotecas
+
         run: |
+
           pip install -r requirements.txt
 
+
       - name: Executar bot
+
         env:
+
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
         run: |
+
           python bot.py
 
+
       - name: Verificar histórico
+
         run: |
-          echo "Conteúdo do published.json:"
+
+          echo "===================================="
+
+          echo "CONTEÚDO DO PUBLISHED.JSON"
+
+          echo "===================================="
+
           cat published.json
 
+
       - name: Salvar histórico no GitHub
+
         run: |
 
           git config --global user.name "Telegram RSS Bot"
