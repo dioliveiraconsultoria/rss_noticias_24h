@@ -112,6 +112,26 @@
     "https://www12.senado.leg.br/noticias/materias/2026/08/18/dois-senadores-concorrem-a-presidencia-dez-tentam-governos-estaduais",
     "https://www12.senado.leg.br/noticias/materias/2026/08/18/candidaturas-femininas-ao-senado-crescem-e-chegam-a-todos-os-estados",
     "https://www12.senado.leg.br/noticias/videos/2026/08/eleicoes-314-pessoas-se-candidataram-ao-senado-neste-ano",
-    "https://www12.senado.leg.br/noticias/materias/2026/08/18/debate-aponta-falta-de-pessoal-no-trt-2-e-demanda-nomeacao-de-concursados"
+    "https://www12.senado.leg.br/noticias/materias/2026/08/18/debate-aponta-falta-de-pessoal-no-trt-2-e-demanda-nomeacao-de-concursados",
+    "https://news.google.com/rss/articles/CBMi1wFBVV95cUxPUGZ2R2dpOXdyV0xBVXYzTmpVUFN4TmNVcHFuU3V2SmNLQ2JpQWRrc1FFUHdsNXBFV3d0V3FoNkF6eXEtMEZ6OU5GNkJMd3Y5Um9KYm8zU3FjTE9sbmRWdzQ4N2d1MVBic3NXeUFaeW4zdXpPeDlHUnpIRGxlc0hDME9SVXlqZ2VVX1BVdU9HZzlJanE2VnhuVldJX3NYYkZfTVVLdGRpMUxzcmhpaFkxdkxfU09HZE5XY0xuWGxEUG9xNXNlVVJ5Q1VHaHV0bmxFTHgyclVjVdIB3AFBVV95cUxOYTFGSm84SWpzZXpQbGZjTW5lcFV2bktFSmdwMUxLOW1aN3JZeXFPYV82ajNVbHAwR1R0TWJSQWd0bTQxZGZ6a3ZyYnBzeTVRc2ZsTWs1SWFEa1QxTkV6bUF3S1EzTF9PWktsS2xrWFBnaHBvVC1hSkxkeGgweTBFNE1BdE9FajZPbGhPeDNra2UtLTZPekhwbkVhaTBhNzBkUTJ6R1Z0M2V3ZHZFX2xzaW5RNTJzaHdhV2ZEX3RTenVSVW9LRjhjc0NqR3NHQ29LUTFMMmdibU1ib3Ro?oc=5",
+    "https://news.google.com/rss/articles/CBMitgFBVV95cUxPS1lQcTdoTUxUb0NTSGpQdTRiYkViRGdkOHZKalBvLVJraG9mcEtJdFJlNllkMjF6bVJ3YnZsUTQwbzNHVHl5VzFlOWhfZURtTllhSUtMRWQtNzdKX3ZWVWVMcHktZG1QU2l6dUxKVTdfX1J1OGR5ZGV0MkdxdFFhaUkyZlg4WUF4UlFEVzhvVGJMUFNWVDZDXzlHX09IZHR6SjZfUHNmMm1aYUhrOGNmcWt6TDVnQQ?oc=5",
+    "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOQ0h2R0tNZDNra1BKNkQybzhVWTc2WDVDX2I5NVJweEFKekJPYWtSaTJaWW50bEJHdmJ1X2tEUS1pQjZCdm9qc0g3ZmVYbWZhUGpSVzB6b0VDbWNlaFdHdE1QUXRRNm5VT2tZSHNDLXlMV21ZMndXbXktNEM3VDVHS1dxcFJ2WnprQVhyUEF6cU1wT0I1SFR1d3JXcXVkT0hxek9oSmxxRVNOWW9QX3lrajQ5Q29sWHJzQ1JIZFQ4dF9HQdIB0AFBVV95cUxNdXNjQkZpLWR4TENlTlNOMGc3QUZxbEMtSWc3UU5ZU05Tdmp6MHktQ1luQmU2NENKQ2lnal9hVDVIN3ZaczVUUnZERUNsZkVBQ0VFcmdUSnRCX09jM0oxWm50UDIxclZhZ19sRDF3VmxzWjZ6RjZmNEV6cmpjRnJNMzFZMTdaYlFFTDVSV1NDYldTUnU2SFBNMDM4VlFTT1A1bERNSDMzeEpiSGFxU0g3RG82Z29PTHdNaG43VWlibFNPMkYyY2ZYSFo0WmEwQzFo?oc=5",
+    "https://news.google.com/rss/articles/CBMiswFBVV95cUxOTlM1UUFUcHdUbGZ0WWZBV1AxcWxHdGk3QnYzNFMyUXBvRTkzY3dmVTEtM0lJLXdOVFI1dGRUWlItX2IwWDc3bmRKTWRiV01VRzZqc29IcVdiQXNyd1RRMGxiRC02MFY2WDNfc3BVVGlobW1HUzN5bnpaSkZ3emtqYW5tLU9veHYwQmVscXhTc3RsZk1jVVVXWDFhTmF2WkhtNTF2V0lucmNkSUlBM0dBdDI0OA?oc=5",
+    "https://news.google.com/rss/articles/CBMiigFBVV95cUxQUEdrNXBjV2U0amlOcDlkWEJwQkhXbENycm96aFA1T25wYnhUNktDaG1ueTRDM1Q4cTlPR1FQRTVlMDRGRHByZ1VCTFJBQ09ZdVBGSkJ0NGJQbW5UN005VXdUZWFIZlh5ZGdyQnZHVEpyekQyU1JxQkVpS1pweTdkeXR1OG9ZaXktOWc?oc=5",
+    "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNZWJhN3FwWEViUzdRRWZsQzk2NkxMcjlEaUhlU2JoNW5WRUVIb0RoWGxEcHlPOGxydm1hbEpmSWFGTjQtUmVWTnJTTENELWpKdUZiY2lXLW1sVlR6a0NhbHRTNE9ISmFrMjlXazlDR2tGQ2FHempya3FvYkRHTlc0WGtSMjZKNmxtbXl6Q21oVS1JSzJmenA1aWVUdV9DQTFINnJaNjZVb3Rrd3ZQLVh1YTV2bU9ydm5BOHhtVEJEdElGQQ?oc=5",
+    "https://www.gazetadopovo.com.br/mundo/portugal-aprova-lei-que-proibe-uso-de-burca-em-locais-publicos/",
+    "https://www.gazetadopovo.com.br/mundo/russos-retiram-bilhoes-dos-bancos-por-receio-de-confisco-pelo-regime-putin/",
+    "https://www.gazetadopovo.com.br/mundo/openai-lanca-chagpt-para-adolescentes/",
+    "https://www1.folha.uol.com.br/mundo/2026/08/trump-pressiona-por-encontro-com-kim-jong-un-ainda-este-ano.shtml",
+    "https://noticias.uol.com.br/ultimas-noticias/afp/2026/08/19/palmeiras-tem-prova-de-fogo-em-assuncao-contra-o-cerro-porteno-na-libertadores.htm",
+    "https://noticias.uol.com.br/ultimas-noticias/afp/2026/08/19/com-tudo-em-aberto-flamengo-recebe-cruzeiro-no-jogo-de-volta-das-oitavas-da-libertadores.htm",
+    "https://www1.folha.uol.com.br/blogs/brasilia-hoje/2026/08/tse-encerra-acao-do-pt-apos-desistencia-e-destrava-repasses-do-fundo-eleitoral.shtml",
+    "https://tnonline.uol.com.br/noticias/apucarana/filme-estrelado-pela-apucaranense-luiza-godoi-acosta-sera-exibido-em-apucarana-1128048",
+    "https://www1.folha.uol.com.br/mundo/2026/08/trump-manda-reporter-se-calar-e-casa-branca-diz-que-filhos-vao-se-envergonhar-dela.shtml",
+    "https://www1.folha.uol.com.br/cotidiano/2026/08/juiza-diz-que-medidas-cautelares-nao-sao-suficientes-para-proteger-mulher-do-marido-empresario-em-sp.shtml",
+    "https://redir.folha.com.br/redir/online/colunas/monicabergamo/rss091/*https://www1.folha.uol.com.br/colunas/monicabergamo/2026/08/chefs-empresarios-e-sommeliers-prestigiam-especial-o-melhor-de-sao-paulo-gastronomia-da-folha.shtml",
+    "https://www1.folha.uol.com.br/poder/2026/08/candidatas-mulheres-sao-um-terco-do-total-ha-quatro-eleicoes-nacionais-veja-perfil-de-2026.shtml",
+    "https://f5.folha.uol.com.br/televisao/2026/08/alem-de-carlos-cesare-relembre-outros-artistas-que-interpretaram-pablo-no-qual-e-a-musica.shtml",
+    "https://tnonline.uol.com.br/noticias/parana/medica-e-denunciada-pela-morte-de-6-criancas-em-uti-neonatal-no-parana-1128046"
   ]
 }
