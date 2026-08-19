@@ -12,16 +12,13 @@ HISTORY_FILE = "published.json"
 
 
 # ==========================================
-# CARREGAR HISTÓRICO
+# HISTÓRICO
 # ==========================================
 
 def load_history():
 
     if not os.path.exists(HISTORY_FILE):
-
-        return {
-            "published": []
-        }
+        return {"published": []}
 
     try:
 
@@ -34,7 +31,6 @@ def load_history():
             data = json.load(file)
 
             if "published" not in data:
-
                 data["published"] = []
 
             return data
@@ -46,14 +42,8 @@ def load_history():
             error
         )
 
-        return {
-            "published": []
-        }
+        return {"published": []}
 
-
-# ==========================================
-# SALVAR HISTÓRICO
-# ==========================================
 
 def save_history(history):
 
@@ -71,56 +61,59 @@ def save_history(history):
         )
 
     print(
-        f"Histórico salvo: {len(history['published'])} notícias"
+        f"Histórico salvo: "
+        f"{len(history['published'])} notícias"
     )
 
 
 # ==========================================
-# ENVIAR PARA TELEGRAM
+# IMAGEM DO RSS
 # ==========================================
 
 def get_image_from_rss(item):
 
-    # Tenta encontrar imagem em media_content
+    # media_content
 
     if "media_content" in item:
 
         for media in item.media_content:
 
-            url = media.get("url")
+            image = media.get("url")
 
-            if url:
+            if image:
+                return image
 
-                return url
 
-
-    # Tenta encontrar imagem em media_thumbnail
+    # media_thumbnail
 
     if "media_thumbnail" in item:
 
         for media in item.media_thumbnail:
 
-            url = media.get("url")
+            image = media.get("url")
 
-            if url:
+            if image:
+                return image
 
-                return url
 
-
-    # Tenta encontrar imagem em enclosures
+    # enclosures
 
     if "enclosures" in item:
 
         for enclosure in item.enclosures:
 
-            url = enclosure.get("url")
+            image = enclosure.get("url")
 
-            if url:
-
-                return url
+            if image:
+                return image
 
 
     return None
+
+
+# ==========================================
+# IMAGEM DA PÁGINA
+# ==========================================
 
 def get_image_from_page(link):
 
@@ -147,8 +140,8 @@ def get_image_from_page(link):
         if not response.ok:
 
             print(
-                "Não foi possível abrir a página:"
-                f" {response.status_code}"
+                "Não foi possível abrir a página:",
+                response.status_code
             )
 
             return None
@@ -172,10 +165,11 @@ def get_image_from_page(link):
 
         if og_image:
 
-            image = og_image.get("content")
+            image = og_image.get(
+                "content"
+            )
 
             if image:
-
                 return image
 
 
@@ -193,20 +187,19 @@ def get_image_from_page(link):
 
         if twitter_image:
 
-            image = twitter_image.get("content")
+            image = twitter_image.get(
+                "content"
+            )
 
             if image:
-
                 return image
 
 
         # ==================================
-        # PRIMEIRA IMAGEM DA PÁGINA
+        # PRIMEIRA IMAGEM
         # ==================================
 
-        image_tag = soup.find(
-            "img"
-        )
+        image_tag = soup.find("img")
 
 
         if image_tag:
@@ -218,7 +211,6 @@ def get_image_from_page(link):
 
 
             if image:
-
                 return image
 
 
@@ -232,6 +224,11 @@ def get_image_from_page(link):
 
     return None
 
+
+# ==========================================
+# BUSCAR IMAGEM
+# ==========================================
+
 def get_news_image(item, link):
 
     print(
@@ -239,11 +236,7 @@ def get_news_image(item, link):
     )
 
 
-    # Primeiro tenta pelo RSS
-
-    image = get_image_from_rss(
-        item
-    )
+    image = get_image_from_rss(item)
 
 
     if image:
@@ -257,8 +250,6 @@ def get_news_image(item, link):
         return image
 
 
-    # Se não encontrou, procura na página
-
     print(
         "Imagem não encontrada no RSS."
     )
@@ -268,9 +259,7 @@ def get_news_image(item, link):
     )
 
 
-    image = get_image_from_page(
-        link
-    )
+    image = get_image_from_page(link)
 
 
     if image:
@@ -288,11 +277,18 @@ def get_news_image(item, link):
         "Nenhuma imagem encontrada."
     )
 
-
     return None
 
 
-def send_telegram(title, link, image):
+# ==========================================
+# TELEGRAM
+# ==========================================
+
+def send_telegram(
+    title,
+    link,
+    image
+):
 
     caption = (
         f"📰 <b>{title}</b>\n\n"
@@ -301,14 +297,14 @@ def send_telegram(title, link, image):
     )
 
 
-    # ==================================
-    # SE EXISTIR FOTO
-    # ==================================
+    # ======================================
+    # COM IMAGEM
+    # ======================================
 
     if image:
 
         url = (
-            f"https://api.telegram.org/"
+            "https://api.telegram.org/"
             f"bot{TELEGRAM_TOKEN}/sendPhoto"
         )
 
@@ -325,14 +321,14 @@ def send_telegram(title, link, image):
         }
 
 
-    # ==================================
-    # SE NÃO EXISTIR FOTO
-    # ==================================
+    # ======================================
+    # SEM IMAGEM
+    # ======================================
 
     else:
 
         url = (
-            f"https://api.telegram.org/"
+            "https://api.telegram.org/"
             f"bot{TELEGRAM_TOKEN}/sendMessage"
         )
 
@@ -389,7 +385,7 @@ def send_telegram(title, link, image):
 
 
 # ==========================================
-# PRINCIPAL
+# BOT PRINCIPAL
 # ==========================================
 
 def main():
@@ -408,7 +404,7 @@ def main():
 
 
     # ======================================
-    # VERIFICAR CONFIGURAÇÕES
+    # CONFIGURAÇÕES
     # ======================================
 
     if not TELEGRAM_TOKEN:
@@ -426,7 +422,7 @@ def main():
 
 
     # ======================================
-    # CARREGAR HISTÓRICO
+    # HISTÓRICO
     # ======================================
 
     history = load_history()
@@ -435,12 +431,13 @@ def main():
 
 
     print(
-        f"Notícias no histórico: {len(published)}"
+        f"Notícias no histórico: "
+        f"{len(published)}"
     )
 
 
     # ======================================
-    # CARREGAR FONTES RSS
+    # RSS
     # ======================================
 
     try:
@@ -461,7 +458,8 @@ def main():
 
 
     print(
-        f"Fontes RSS encontradas: {len(feeds)}"
+        f"Fontes RSS encontradas: "
+        f"{len(feeds)}"
     )
 
 
@@ -469,7 +467,7 @@ def main():
 
 
     # ======================================
-    # VERIFICAR CADA FONTE
+    # FONTES
     # ======================================
 
     for feed in feeds:
@@ -513,7 +511,7 @@ def main():
 
 
         # ==================================
-        # LER RSS
+        # CONSULTAR RSS
         # ==================================
 
         try:
@@ -525,7 +523,8 @@ def main():
         except Exception as error:
 
             print(
-                f"Erro ao consultar RSS: {error}"
+                "Erro ao consultar RSS:",
+                error
             )
 
             continue
@@ -547,10 +546,8 @@ def main():
 
 
         # ==================================
-        # PROCESSAR NOTÍCIAS
+        # ÚLTIMAS 20 NOTÍCIAS
         # ==================================
-
-        # Verifica somente as 20 mais recentes
 
         entries = rss.entries[:20]
 
@@ -571,29 +568,22 @@ def main():
 
             if not link:
 
-                print(
-                    "Notícia sem link. Ignorando."
-                )
-
                 continue
 
 
             # ==================================
-            # VERIFICAR DUPLICAÇÃO
+            # DUPLICAÇÃO
             # ==================================
 
             if link in published:
 
                 print(
-                    f"IGNORADA - já publicada: {title}"
+                    f"IGNORADA - já publicada: "
+                    f"{title}"
                 )
 
                 continue
 
-
-            # ==================================
-            # NOVA NOTÍCIA
-            # ==================================
 
             print()
             print(
@@ -608,25 +598,30 @@ def main():
                 f"Link: {link}"
             )
 
-       
+
             # ==================================
-            # PROCURAR IMAGEM
+            # BUSCAR IMAGEM
             # ==================================
-           image = get_news_image(
-            item,
-            link
-)
+
+            image = get_news_image(
+                item,
+                link
+            )
+
+
             # ==================================
-            # PUBLICAR NO TELEGRAM
+            # ENVIAR TELEGRAM
             # ==================================
 
             success = send_telegram(
-            title,
-            link,
-            image
-)
+                title,
+                link,
+                image
+            )
+
+
             # ==================================
-            # SALVAR NO HISTÓRICO
+            # SALVAR HISTÓRICO
             # ==================================
 
             if success:
@@ -650,13 +645,12 @@ def main():
             else:
 
                 print(
-                    "Não foi salva porque "
-                    "o Telegram não confirmou o envio."
+                    "Notícia não salva no histórico."
                 )
 
 
     # ======================================
-    # RESULTADO FINAL
+    # RESULTADO
     # ======================================
 
     print()
@@ -687,7 +681,7 @@ def main():
 
 
 # ==========================================
-# INICIAR BOT
+# INICIAR
 # ==========================================
 
 if __name__ == "__main__":
