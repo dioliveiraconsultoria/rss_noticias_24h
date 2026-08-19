@@ -2,6 +2,7 @@ import os
 import json
 import requests
 import feedparser
+from bs4 import BeautifulSoup
 
 
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
@@ -78,29 +79,275 @@ def save_history(history):
 # ENVIAR PARA TELEGRAM
 # ==========================================
 
-def send_telegram(title, link):
+def get_image_from_rss(item):
 
-    message = (
+    # Tenta encontrar imagem em media_content
+
+    if "media_content" in item:
+
+        for media in item.media_content:
+
+            url = media.get("url")
+
+            if url:
+
+                return url
+
+
+    # Tenta encontrar imagem em media_thumbnail
+
+    if "media_thumbnail" in item:
+
+        for media in item.media_thumbnail:
+
+            url = media.get("url")
+
+            if url:
+
+                return url
+
+
+    # Tenta encontrar imagem em enclosures
+
+    if "enclosures" in item:
+
+        for enclosure in item.enclosures:
+
+            url = enclosure.get("url")
+
+            if url:
+
+                return url
+
+
+    return None
+
+def get_image_from_page(link):
+
+    try:
+
+        headers = {
+            "User-Agent": (
+                "Mozilla/5.0 "
+                "(Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 "
+                "(KHTML, like Gecko) "
+                "Chrome/131.0 Safari/537.36"
+            )
+        }
+
+
+        response = requests.get(
+            link,
+            headers=headers,
+            timeout=15
+        )
+
+
+        if not response.ok:
+
+            print(
+                "Não foi possível abrir a página:"
+                f" {response.status_code}"
+            )
+
+            return None
+
+
+        soup = BeautifulSoup(
+            response.text,
+            "html.parser"
+        )
+
+
+        # ==================================
+        # OG IMAGE
+        # ==================================
+
+        og_image = soup.find(
+            "meta",
+            property="og:image"
+        )
+
+
+        if og_image:
+
+            image = og_image.get("content")
+
+            if image:
+
+                return image
+
+
+        # ==================================
+        # TWITTER IMAGE
+        # ==================================
+
+        twitter_image = soup.find(
+            "meta",
+            attrs={
+                "name": "twitter:image"
+            }
+        )
+
+
+        if twitter_image:
+
+            image = twitter_image.get("content")
+
+            if image:
+
+                return image
+
+
+        # ==================================
+        # PRIMEIRA IMAGEM DA PÁGINA
+        # ==================================
+
+        image_tag = soup.find(
+            "img"
+        )
+
+
+        if image_tag:
+
+            image = (
+                image_tag.get("src")
+                or image_tag.get("data-src")
+            )
+
+
+            if image:
+
+                return image
+
+
+    except Exception as error:
+
+        print(
+            "Erro ao procurar imagem:",
+            error
+        )
+
+
+    return None
+
+def get_news_image(item, link):
+
+    print(
+        "Procurando imagem no RSS..."
+    )
+
+
+    # Primeiro tenta pelo RSS
+
+    image = get_image_from_rss(
+        item
+    )
+
+
+    if image:
+
+        print(
+            "Imagem encontrada no RSS:"
+        )
+
+        print(image)
+
+        return image
+
+
+    # Se não encontrou, procura na página
+
+    print(
+        "Imagem não encontrada no RSS."
+    )
+
+    print(
+        "Procurando imagem na página..."
+    )
+
+
+    image = get_image_from_page(
+        link
+    )
+
+
+    if image:
+
+        print(
+            "Imagem encontrada na página:"
+        )
+
+        print(image)
+
+        return image
+
+
+    print(
+        "Nenhuma imagem encontrada."
+    )
+
+
+    return None
+
+
+def send_telegram(title, link, image):
+
+    caption = (
         f"📰 <b>{title}</b>\n\n"
         f"🔗 <b>Leia a matéria:</b>\n"
         f"{link}"
     )
 
-    url = (
-        f"https://api.telegram.org/"
-        f"bot{TELEGRAM_TOKEN}/sendMessage"
-    )
 
-    data = {
+    # ==================================
+    # SE EXISTIR FOTO
+    # ==================================
 
-        "chat_id": TELEGRAM_CHAT_ID,
+    if image:
 
-        "text": message,
+        url = (
+            f"https://api.telegram.org/"
+            f"bot{TELEGRAM_TOKEN}/sendPhoto"
+        )
 
-        "parse_mode": "HTML",
 
-        "disable_web_page_preview": False
-    }
+        data = {
+
+            "chat_id": TELEGRAM_CHAT_ID,
+
+            "photo": image,
+
+            "caption": caption,
+
+            "parse_mode": "HTML"
+        }
+
+
+    # ==================================
+    # SE NÃO EXISTIR FOTO
+    # ==================================
+
+    else:
+
+        url = (
+            f"https://api.telegram.org/"
+            f"bot{TELEGRAM_TOKEN}/sendMessage"
+        )
+
+
+        data = {
+
+            "chat_id": TELEGRAM_CHAT_ID,
+
+            "text": caption,
+
+            "parse_mode": "HTML",
+
+            "disable_web_page_preview": False
+        }
+
 
     try:
 
@@ -110,28 +357,31 @@ def send_telegram(title, link):
             timeout=30
         )
 
+
         if response.ok:
 
             print(
-                "Mensagem enviada com sucesso:"
+                "Mensagem enviada com sucesso."
             )
 
-            print(title)
-
             return True
+
 
         print(
             "Erro Telegram:"
         )
 
-        print(response.text)
+        print(
+            response.text
+        )
 
         return False
+
 
     except Exception as error:
 
         print(
-            "Erro de conexão com Telegram:",
+            "Erro ao enviar para Telegram:",
             error
         )
 
@@ -358,17 +608,23 @@ def main():
                 f"Link: {link}"
             )
 
-
+       
+            # ==================================
+            # PROCURAR IMAGEM
+            # ==================================
+           image = get_news_image(
+            item,
+            link
+)
             # ==================================
             # PUBLICAR NO TELEGRAM
             # ==================================
 
             success = send_telegram(
-                title,
-                link
-            )
-
-
+            title,
+            link,
+            image
+)
             # ==================================
             # SALVAR NO HISTÓRICO
             # ==================================
