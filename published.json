@@ -1058,6 +1058,26 @@
     "https://noticias.uol.com.br/ultimas-noticias/agencia-estado/2026/08/21/corpos-de-duas-primas-desaparecidas-no-pr-sao-encontrados-policia-prende-suspeito.htm",
     "https://www1.folha.uol.com.br/blogs/brasilia-hoje/2026/08/gilmar-libera-flexibilizacao-da-ficha-limpa-para-julgamento-antes-do-1o-turno-das-eleicoes.shtml",
     "https://www1.folha.uol.com.br/mundo/2026/08/venezuela-concede-aval-a-novo-embaixador-do-brasil-em-caracas.shtml",
-    "https://noticias.uol.com.br/ultimas-noticias/agencia-estado/2026/08/21/datafolhamg-marilia-tem-11-para-senado-em-empate-com-viana-8-savio-6-e-aro-5.htm"
+    "https://noticias.uol.com.br/ultimas-noticias/agencia-estado/2026/08/21/datafolhamg-marilia-tem-11-para-senado-em-empate-com-viana-8-savio-6-e-aro-5.htm",
+    "https://news.google.com/rss/articles/CBMi-wFBVV95cUxOb3FmOGxjRF90MGZWVGhIaE00ZVIxZVg5SVY4ZHlhUnN1TV9QLUdRUWtTbk85SWM5MkZUak0waUxGUGZmUk1ZX3hxeS1QaTZDNGNGX09YSURQMFFWQnBrN3ZqbzB6bXg2WHRqY0tpV3lNZko5alRPb2g5cWJiMEdxaFMzb0F1R1JGZlRydUl5RDdCNG1UY1VZblpIZVJtbWxqNjA2b2FOOXkzSVZxZjlobjk0OHV0dUUxMnNNZlNqSHN3NTVzU3k3bnhVWFlyQlZUNDZPT2tkdG15V016Z1NhbVhYTGI2Y1pISjUyUGlSMnM0Z05Td0hVajBoY9IBigJBVV95cUxQNldzLW1sei12RndsMlRDVlZNQ3d6Nmswc3dvMUV3cmxpcUZxTm1FZWo0VDdJZDl2bVRFMHA3dWEtekJDOWhXOHJXMVBsMWNsWEMyekMyMzljd2dnNzN3OUFicjJ1SG9BRzhVY3VFbkhFZ0xKQnVyenJVdXNiTDJlSl9LNVVrRGhLcVBUUGdSdWlZdHZ5MGhhMHd2cGhZZk1sWm52X01sS3F2UlVRYjVPWlJpdE5McmZ5WXg1QlBFZWg4LUtqd01LRDlJUnpiMmo5ckljOHYxT3FNenUyTDM1YURiUTBLU2FROGpSUENkQXpGVndiTl9qSkVKSk5QRzZGd2ljZ2RlLV9jZw?oc=5",
+    "https://news.google.com/rss/articles/CBMiywFBVV95cUxPNnVuUmxPUkF2cEQ4X3B0ZVNYdkRHVkFMUmZfbS1XaWJYNzlrdjE0U0hSN0ZMNWtrOEhHR1RzTXdxY3l0RzFaamtxeS1Db29OMlJ4cWNyRDF5UXBkc29SYS05SXJ6MF92TzZQZGN0ZkJiYnZZVHYwbEZGSFFhbVF3QWwtX0hFMjBkbElXb2JfQkNfOGtmQmM4Q1V5bEY4UWFsYjNTekliYkJsd1FPRXBFclFfNXFXQWh4cTB1REFNa3FkTk83ajVwTDBfWdIB0AFBVV95cUxQOXJTU2NiYl9ncmd0WVpVQTV0OHlYOC1wb0dDNGJhT2VMUE1ZZUthSmlITEVGZVZNTTNzeVJGUFk3c1VoWUY5TFIzQ21vVS1IUnlNWFFtZENacWhQa0xvQWtXcWdQMHg2cG9RVVpTOVpoZHB1eHlBRDlyVFdKNTlHN0RnVng4blQ4TGhNQWcyUFhtSk14Y3FpT1NObGctbkpDWWRrTGExRFJGWUpoeUI3SmVNSWVUYVJudXR5anQ3ZFlZa2hFMVlaM3p1ckdVVXBy?oc=5",
+    "https://news.google.com/rss/articles/CBMitwFBVV95cUxNS0p0SE5tSkdySnBfQUhWZklHOTRLVmxHU0tmSzluamFUU0xsUzhQYloyY0gwX1IxVUotWVFXQjhoNjNKYVQyV0dkOUZoZUJIaElCV1VTQXBmTXZvNHh0bXRudGY3S3Bad1BXNTdJZVpFcGxvVDNOSk1qZDRoWHJVMmx6aE5fRTRsblIwMkMyUWl2b3dpdm5lbmpVd2MyMjlJMVNHbDFUdGN5TDhreHFTWVJiUlRxU00?oc=5",
+    "https://news.google.com/rss/articles/CBMiyAFBVV95cUxQcnRKUnZGOFVZakNYRm0yVnp1ZGt5WXZRRW43cTlsaVNra1lzS1hKUElqelg0NzJ0bmJfbnJtblFVdTF4M3lnYndPbzJIWFlBNlNmcnRsWFBSNHE2Q0JGaVZHZ3Y1OE4walh1NDBWMjJYRHNhczRPbWdyOW94RUZhU3VfVl9yWlpacnFDQnVkU2JlVTVzbDNUQ1YzVDF4c0F4Y2NEbHNGSmh6bVJLVGtpb1B6UjFVOEtKVHhnSktaNDBRanFlb2hwMQ?oc=5",
+    "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNMWVpemFzb0RSUkVKaEtuR2tMQVlwdThmWjJsNVhaZ3lRc0xJdkJXMDlYdWtuem1QdkRfZU1MZzVUUWpueXJaVi1hc3Q1X1Fvak10S1RSUFdkYkJGYTRsUXpxblY4elVlOERRUEx0am80T25kRnpKdURLb1FmOEEyaGdhQ0xZQWFCaUVDNUE2VTY3R2NhLUtwOFJseFVKVEI3V3BSMC1kd1NhN2dzWEpnRmxQZmJkSG1LUE5pRG15TDk0d9IB0AFBVV95cUxOWXNIdkhsa19jcnliTFJXLVoyNTV2cl9mWnRuMFpPNXNMOVJkc2kzVGdoX3lmTVptVW92NnZzMFlJaU9BXzZyZzZrRWtZQUljRk96R0dKMUExZW9JZWoxc2Zqd1ppRkEteWRSLUZSenM2TkE5Zno0Z1RDZmFTMlJXZW53eDRsX0V6OFRLVXNRcWdhbmFBRk9EdjNERUV4bExtdWJPM1NSYkRKVzVrTFA5ZFJwTmhWWW5RRnlLMks4emlNZEtXLVd4cEo2ZjVjdmNp?oc=5",
+    "https://www.gazetadopovo.com.br/brasil/justica-proibe-deputado-estadual-de-fiscalizar-universidades-da-bahia-sem-agendamento/",
+    "https://www.gazetadopovo.com.br/mundo/ataque-russo-a-shopping-na-ucrania-deixa-15-mortos-e-mais-de-130-feridos/",
+    "https://noticias.uol.com.br/ultimas-noticias/reuters/2026/08/21/trump-diz-que-ira-nao-esta-pronto-para-fechar-o-acordo-certo.htm",
+    "https://tnonline.uol.com.br/noticias/apucarana/nutricionista-apucaranense-morre-aos-30-anos-em-acidente-de-moto-em-maringa-1128955",
+    "https://noticias.uol.com.br/politica/ultimas-noticias/2026/08/21/casado-bolsonarismo-perdeu-muita-forca-no-rio-berco-politico-da-familia.ghtm",
+    "https://noticias.uol.com.br/ultimas-noticias/afp/2026/08/21/tiktok-vai-pagar-us-400-milhoes-para-resolver-caso-de-privacidade-infantil.htm",
+    "https://noticias.uol.com.br/ultimas-noticias/afp/2026/08/21/ataque-russo-contra-shopping-na-ucrania-deixa-ao-menos-16-mortos.htm",
+    "https://tnonline.uol.com.br/noticias/apucarana/gcm-apreende-75-pinos-de-cocaina-apos-suspeito-fugir-de-patrulha-em-apucarana-1128952",
+    "https://noticias.uol.com.br/politica/ultimas-noticias/2026/08/21/toledo-so-reviravolta-faria-tarcisio-nao-ser-eleito-no-1-turno-em-sp.ghtm",
+    "https://noticias.uol.com.br/eleicoes/2026/08/21/agregador-lula-tem-7-pontos-de-vantagem-sobre-flavio-no-1-turno.ghtm",
+    "https://noticias.uol.com.br/ultimas-noticias/agencia-estado/2026/08/21/mp-pede-impugnacao-da-candidatura-de-gustavo-rocha-no-df-mas-stf-retifica-ata.htm",
+    "https://www1.folha.uol.com.br/opiniao/2026/08/df-e-piaui-em-caminhos-opostos-na-educacao.shtml",
+    "https://www1.folha.uol.com.br/colunas/walter-porto/2026/08/tim-berners-lee-pioneiro-da-internet-lanca-livro-dizendo-que-ela-precisa-ser-resgatada.shtml",
+    "https://noticias.uol.com.br/politica/ultimas-noticias/2026/08/21/casado-campanha-de-flavio-aposta-em-onda-favoravel-no-2-turno.ghtm",
+    "https://noticias.uol.com.br/ultimas-noticias/agencia-estado/2026/08/21/justica-confirma-anulacao-da-revisao-de-tombamento-que-liberava-condominios-nos-jardins.htm"
   ]
 }
