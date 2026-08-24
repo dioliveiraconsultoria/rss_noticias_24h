@@ -38,6 +38,22 @@
      {
         "name": "Folha do estada - bahia",
         "url": "https://www.jornalfolhadoestado.com/feed/"
+    },
+     {
+        "name": "FMetro 1",
+        "url": "https://www.metro1.com.br/rss"
+    },
+     {
+        "name": "Correio da bahia",
+        "url": "https://www.correio24horas.com.br/rss"
+    },
+     {
+        "name": "Ibahia",
+        "url": "https://www.ibahia.com/rss"
+    },
+     {
+        "name": "Diáriodo Poder",
+        "url": "https://diariodopoder.com.br/feed"
     }
 ]
-https://www.jornalfolhadoestado.com/feed/
+
