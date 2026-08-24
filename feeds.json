@@ -28,9 +28,11 @@
         "url": "https://www.camara.leg.br/noticias/rss/ultimas-noticias"
     },
      {
-        "name": "Senado",
+        "name": "Bahia na politicas",
         "url": "https://bahianapolitica.com.br/feed/"
+    },
+     {
+        "name": "Boção News",
+        "url": "https://www.bnews.com.br/feed"
     }
 ]
-
-
