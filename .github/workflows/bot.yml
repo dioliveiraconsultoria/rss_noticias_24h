@@ -84,26 +84,20 @@ jobs:
           cat published.json
 
 
-      - name: Salvar histórico
+        - name: Salvar histórico
+          run: |
+            git config user.name "Telegram RSS Bot"
+            git config user.email "telegram-rss-bot@users.noreply.github.com"
 
-        run: |
+            git add published.json
 
-          git config user.name "Telegram RSS Bot"
-
-          git config user.email "telegram-rss-bot@users.noreply.github.com"
-
-
-          git add published.json
-
-
-          if git diff --cached --quiet; then
-
-            echo "Nenhuma alteração."
-
-          else
+            if git diff --cached --quiet; then
+              echo "Nenhuma alteração."
+              exit 0
+            fi
 
             git commit -m "Atualizar histórico RSS"
 
-            git push origin HEAD:main
+            git pull --rebase origin main
 
-          fi
+            git push origin HEAD:main
