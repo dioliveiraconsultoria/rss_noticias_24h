@@ -1,103 +1,65 @@
 name: Telegram RSS Bot
 
 on:
-
   schedule:
-
     - cron: "*/10 * * * *"
-
   workflow_dispatch:
 
-
 permissions:
-
   contents: write
 
-
 concurrency:
-
   group: telegram-rss-bot
-
   cancel-in-progress: false
 
-
 jobs:
-
   run-bot:
-
     runs-on: ubuntu-latest
 
-
     steps:
-
-
       - name: Baixar projeto
-
         uses: actions/checkout@v5
-
         with:
-
           fetch-depth: 0
-
           persist-credentials: true
 
-
       - name: Configurar Python
-
         uses: actions/setup-python@v6
-
         with:
-
           python-version: "3.12"
 
-
       - name: Instalar bibliotecas
-
         run: |
-
           pip install -r requirements.txt
 
-
       - name: Executar bot
-
         env:
-
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-
         run: |
-
           python bot.py
 
-
       - name: Mostrar histórico
-
         run: |
-
           echo "===================================="
-
           echo "HISTÓRICO ATUAL"
-
           echo "===================================="
-
           cat published.json
 
+      - name: Salvar histórico
+        run: |
+          git config user.name "Telegram RSS Bot"
+          git config user.email "telegram-rss-bot@users.noreply.github.com"
 
-        - name: Salvar histórico
-          run: |
-            git config user.name "Telegram RSS Bot"
-            git config user.email "telegram-rss-bot@users.noreply.github.com"
+          git add published.json
 
-            git add published.json
+          if git diff --cached --quiet; then
+            echo "Nenhuma alteração."
+            exit 0
+          fi
 
-            if git diff --cached --quiet; then
-              echo "Nenhuma alteração."
-              exit 0
-            fi
+          git commit -m "Atualizar histórico RSS"
 
-            git commit -m "Atualizar histórico RSS"
+          git pull --rebase origin main
 
-            git pull --rebase origin main
-
-            git push origin HEAD:main
+          git push origin HEAD:main
